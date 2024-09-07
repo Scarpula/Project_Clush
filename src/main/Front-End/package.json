@@ -1,0 +1,70 @@
+{
+	"name": "todo_react_app",
+	"version": "0.1.0",
+	"proxy": "http://localhost:8083",
+	"private": true,
+	"homepage": "https://javascriptbear.github.io/todo_react_app",
+	"dependencies": {
+		"@fullcalendar/core": "^6.1.15",
+		"@fullcalendar/daygrid": "^6.1.15",
+		"@fullcalendar/interaction": "^6.1.15",
+		"@fullcalendar/react": "^6.1.15",
+		"@fullcalendar/timegrid": "^6.1.15",
+		"@mantine/core": "^4.2.12",
+		"@mantine/hooks": "^4.2.12",
+		"@mui/material": "^6.0.2",
+		"@tanstack/react-query": "^5.54.1",
+		"@testing-library/jest-dom": "^5.16.4",
+		"@testing-library/react": "^13.3.0",
+		"@testing-library/user-event": "^13.5.0",
+		"@types/jquery": "^3.5.30",
+		"@types/select2": "^4.0.63",
+		"axios": "^1.7.7",
+		"bootstrap": "^5.3.3",
+		"bootstrap-datetimepicker": "^0.0.7",
+		"date-fns": "^3.6.0",
+		"framer-motion": "^11.4.0",
+		"http-proxy-middleware": "^3.0.2",
+		"jquery": "^3.7.1",
+		"moment": "^2.30.1",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"react-modal": "^3.16.1",
+		"react-router-dom": "^6.26.1",
+		"react-scripts": "5.0.1",
+		"react-tabs": "^6.0.2",
+		"select2": "^4.1.0-rc.0",
+		"styled-components": "^6.1.13",
+		"tabler-icons-react": "^1.52.0",
+		"web-vitals": "^2.1.4"
+	},
+	"scripts": {
+		"predeploy": "npm run build",
+		"deploy": "gh-pages -d build",
+		"start": "react-scripts start",
+		"build": "react-scripts build",
+		"test": "react-scripts test",
+		"eject": "react-scripts eject"
+	},
+	"eslintConfig": {
+		"extends": [
+			"react-app",
+			"react-app/jest"
+		]
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	},
+	"devDependencies": {
+		"gh-pages": "^4.0.0"
+	}
+}
