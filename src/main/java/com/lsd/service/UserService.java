@@ -4,7 +4,11 @@ package com.lsd.service;
 import com.lsd.dto.CalendarDTO;
 import com.lsd.dto.TodoDTO;
 import com.lsd.dto.UserDTO;
+import com.lsd.model.Calendar;
+import com.lsd.model.ToDo;
 import com.lsd.model.User;
+import com.lsd.repository.CalendarRepository;
+import com.lsd.repository.ToDoRepository;
 import com.lsd.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +22,12 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CalendarRepository calendarRepository;
+
+    @Autowired
+    private ToDoRepository toDoRepository;
 
     @Transactional(readOnly = true)
     public UserDTO getUserWithDetails(Long userId) {
@@ -35,10 +45,11 @@ public class UserService {
                         .map(calendar -> new CalendarDTO(
                                 calendar.getId(),
                                 calendar.getTitle(),
-                                calendar.getStart(), // LocalDate로 수정
-                                calendar.getEnd(),   // LocalDate로 수정
+                                calendar.getStart(),
+                                calendar.getEnd(),
                                 calendar.getNotificationTime(),
-                                calendar.getUser().getUsername()
+                                calendar.getUser().getUsername(),
+                                calendar.isShared() // 공유 여부 반영
                         ))
                         .collect(Collectors.toList()),
                 user.getTodos().stream()
@@ -47,9 +58,26 @@ public class UserService {
                                 todo.getTitle(),
                                 todo.getSummary(),
                                 todo.getTime(),
-                                todo.getUsername()
+                                todo.getUser().getUsername()
                         ))
                         .collect(Collectors.toList())
         );
+    }
+
+    // Calendar ID로 조회
+    @Transactional(readOnly = true)
+    public Calendar getCalendarById(Long calendarId) {
+        return calendarRepository.findById(calendarId).orElse(null);
+    }
+
+    // ToDo ID로 조회
+    @Transactional(readOnly = true)
+    public ToDo getToDoById(Long todoId) {
+        return toDoRepository.findById(todoId).orElse(null);
+    }
+
+    // 특정 사용자 검색
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }

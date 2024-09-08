@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 const ListContainer = styled.div`
     padding: 20px;
-    max-width: 800px;
+    width: 800px;
     margin: 0 auto;
     background: #fff;
     border-radius: 10px;
@@ -31,16 +31,33 @@ const EventDates = styled.span`
     color: #666;
 `;
 
+const SharedLabel = styled.div`
+    background: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    color: #555;
+    margin-top: 5px;
+`;
+
 const EventList = ({ onDeleteEvent }) => {
     const [events, setEvents] = useState([]);
+    const [sharedEvents, setSharedEvents] = useState([]); // 공유받은 일정 상태
 
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await axios.get('http://localhost:8083/api/cal', {
+                const response = await axios.get('http://localhost:8083/api/share/calendars', {
                     withCredentials: true,
                 });
-                setEvents(response.data);
+
+                // 자신의 일정과 공유받은 일정을 분리
+                const ownEvents = response.data.filter((event) => !event.shared);
+                const receivedEvents = response.data.filter((event) => event.shared);
+
+                setEvents(ownEvents);
+                setSharedEvents(receivedEvents);
+
             } catch (error) {
                 console.error('이벤트 불러오기 오류:', error);
                 alert('이벤트 불러오기 중 오류가 발생했습니다.');
@@ -66,12 +83,14 @@ const EventList = ({ onDeleteEvent }) => {
     return (
         <ListContainer>
             <h2>일정 목록</h2>
+
+            {/* 자신의 일정 목록 */}
             {events.length === 0 ? (
                 <p>등록된 일정이 없습니다.</p>
             ) : (
                 events.map((event) => (
                     <EventItem key={event.id}>
-                        <div>
+                        <div style={{ width: '90%', display: 'flex', justifyContent: 'space-between' }}>
                             <EventTitle>{event.title}</EventTitle>
                             <EventDates>
                                 {event.start.split('T')[0]} ~ {event.end.split('T')[0]}
@@ -87,6 +106,26 @@ const EventList = ({ onDeleteEvent }) => {
                         </div>
                     </EventItem>
                 ))
+            )}
+
+            {/* 공유받은 일정 목록 */}
+            {sharedEvents.length > 0 && (
+                <>
+                    <h3>공유받은 일정</h3>
+                    {sharedEvents.map((event) => (
+                        <EventItem key={event.id}>
+                            <div style={{ width: '90%', display: 'flex', justifyContent: 'space-between', flexDirection: 'column' }}>
+                                <EventTitle>{event.title}</EventTitle>
+                                <EventDates>
+                                    {event.start.split('T')[0]} ~ {event.end.split('T')[0]}
+                                </EventDates>
+                                <SharedLabel>
+                                    공유받은 일정 | 공유해준 사용자: {event.username}
+                                </SharedLabel>
+                            </div>
+                        </EventItem>
+                    ))}
+                </>
             )}
         </ListContainer>
     );

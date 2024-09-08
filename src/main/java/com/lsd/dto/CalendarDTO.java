@@ -18,6 +18,7 @@ public class CalendarDTO {
     private LocalDate end;
     private String notificationTime;
     private String username;
+    private boolean isShared;
 
     // Calendar 객체를 CalendarDTO로 변환하는 생성자
     public CalendarDTO(Calendar calendar) {
@@ -27,5 +28,6 @@ public class CalendarDTO {
         this.end = calendar.getEnd();
         this.notificationTime = calendar.getNotificationTime();
         this.username = calendar.getUser() != null ? calendar.getUser().getUsername() : null;
+        this.isShared = calendar.isShared(); // Calendar의 isShared 필드를 DTO에 반영
     }
 }

@@ -2,15 +2,16 @@ package com.lsd.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -30,4 +31,13 @@ public class ToDo {
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;  // ToDo와 연결된 사용자
+
+    @ManyToMany
+    @JoinTable(
+            name = "todo_shared_users",
+            joinColumns = @JoinColumn(name = "todo_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @Builder.Default
+    private List<User> sharedUsers = new ArrayList<>();
 }
