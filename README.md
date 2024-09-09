@@ -1,7 +1,7 @@
 <h2>$\huge{\rm{\color{	
 #4682B4}ToDoList And Calendar App}}$</h2>
 
-<p>$\huge{\rm{\color{#4682B4}목차}}$</p>
+## <span style="color:#4682B4">목차</span>
 
 - [프로젝트 소개](#프로젝트-소개)
 - [APP 설명](#APP-설명)
@@ -12,7 +12,7 @@
 <br/>
 <br/>
 <h3 id="프로젝트-소개">$\huge{\rm{\color{	
-#4682B4}프로젝트/t소개}}$</h3>
+#4682B4}프로젝트-소개}}$</h3>
 <br/>
 - 내가 할일 을 저장하는 ToDoList 와 일정 관리 캘린더로 이용하는 Calendar-App 을 만들었습니다.
 <br/>
