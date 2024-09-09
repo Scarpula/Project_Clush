@@ -1,10 +1,13 @@
-// src/main/java/com/lsd/controller/CalendarController.java
 package com.lsd.controller;
 
 import com.lsd.dto.CalendarDTO;
 import com.lsd.model.Calendar;
 import com.lsd.model.User;
 import com.lsd.service.CalendarService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +25,11 @@ public class CalendarController {
         this.calendarService = calendarService;
     }
 
-    // 로그인한 사용자 기준 전체 이벤트 조회
+    @Operation(summary = "로그인한 사용자의 전체 이벤트 조회", description = "현재 로그인한 사용자의 모든 이벤트를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "이벤트 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "로그인 후 사용 가능합니다.")
+    })
     @GetMapping
     public ResponseEntity<?> getAllEvents(HttpSession session) {
         User loggedUser = (User) session.getAttribute("user");
@@ -41,9 +48,15 @@ public class CalendarController {
         return ResponseEntity.ok(eventDTOs);
     }
 
-    // 이벤트 추가 (로그인한 사용자 기준)
+    @Operation(summary = "이벤트 추가", description = "로그인한 사용자를 기준으로 새로운 이벤트를 추가합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "이벤트 추가 성공"),
+            @ApiResponse(responseCode = "401", description = "로그인 후 사용 가능합니다.")
+    })
     @PostMapping
-    public ResponseEntity<?> addEvent(@RequestBody Calendar calendar, HttpSession session) {
+    public ResponseEntity<?> addEvent(
+            @Parameter(description = "새로 추가할 이벤트 객체") @RequestBody Calendar calendar,
+            HttpSession session) {
         User loggedUser = (User) session.getAttribute("user");
 
         if (loggedUser == null) {
@@ -58,9 +71,17 @@ public class CalendarController {
         return ResponseEntity.ok(eventDTO);
     }
 
-    // 이벤트 수정 (로그인한 사용자 기준)
+    @Operation(summary = "이벤트 수정", description = "로그인한 사용자가 자신의 이벤트를 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "이벤트 수정 성공"),
+            @ApiResponse(responseCode = "401", description = "로그인 후 사용 가능합니다."),
+            @ApiResponse(responseCode = "403", description = "수정 권한이 없습니다.")
+    })
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateEvent(@PathVariable Long id, @RequestBody Calendar calendar, HttpSession session) {
+    public ResponseEntity<?> updateEvent(
+            @Parameter(description = "수정할 이벤트의 ID") @PathVariable Long id,
+            @Parameter(description = "수정할 이벤트 정보") @RequestBody Calendar calendar,
+            HttpSession session) {
         User loggedUser = (User) session.getAttribute("user");
 
         if (loggedUser == null) {
@@ -80,9 +101,16 @@ public class CalendarController {
         return ResponseEntity.ok(eventDTO);
     }
 
-    // 이벤트 삭제 (로그인한 사용자 기준)
+    @Operation(summary = "이벤트 삭제", description = "로그인한 사용자가 자신의 이벤트를 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "이벤트 삭제 성공"),
+            @ApiResponse(responseCode = "401", description = "로그인 후 사용 가능합니다."),
+            @ApiResponse(responseCode = "403", description = "삭제 권한이 없습니다.")
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteEvent(@PathVariable Long id, HttpSession session) {
+    public ResponseEntity<?> deleteEvent(
+            @Parameter(description = "삭제할 이벤트의 ID") @PathVariable Long id,
+            HttpSession session) {
         User loggedUser = (User) session.getAttribute("user");
 
         if (loggedUser == null) {

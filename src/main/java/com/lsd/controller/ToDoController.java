@@ -1,4 +1,3 @@
-// src/main/java/com/lsd/controller/ToDoController.java
 package com.lsd.controller;
 
 import com.lsd.dto.TodoDTO;
@@ -6,6 +5,10 @@ import com.lsd.model.ToDo;
 import com.lsd.model.User;
 import com.lsd.repository.ToDoRepository;
 import com.lsd.repository.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +28,15 @@ public class ToDoController {
         this.userRepository = userRepository;
     }
 
-    // 새로운 ToDo 생성 (로그인한 사용자 기준)
+    @Operation(summary = "새로운 ToDo 생성", description = "로그인한 사용자를 기준으로 새로운 ToDo를 생성합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ToDo 생성 성공"),
+            @ApiResponse(responseCode = "401", description = "로그인 후 사용 가능합니다.")
+    })
     @PostMapping
-    public ResponseEntity<?> createToDo(@RequestBody ToDo toDo, HttpSession session) {
+    public ResponseEntity<?> createToDo(
+            @Parameter(description = "새로 생성할 ToDo 객체") @RequestBody ToDo toDo,
+            HttpSession session) {
         User loggedUser = (User) session.getAttribute("user");
 
         if (loggedUser == null) {
@@ -49,7 +58,11 @@ public class ToDoController {
         return ResponseEntity.ok(todoDTO);
     }
 
-    // 로그인한 사용자 기준 ToDo 리스트 불러오기
+    @Operation(summary = "로그인한 사용자의 ToDo 조회", description = "현재 로그인한 사용자의 모든 ToDo를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ToDo 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "로그인 후 사용 가능합니다.")
+    })
     @GetMapping
     public ResponseEntity<?> getAllToDos(HttpSession session) {
         User loggedUser = (User) session.getAttribute("user");
@@ -72,9 +85,16 @@ public class ToDoController {
         return ResponseEntity.ok(todos);
     }
 
-    // ToDo 삭제 메소드 추가
+    @Operation(summary = "ToDo 삭제", description = "로그인한 사용자가 자신의 ToDo를 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ToDo 삭제 성공"),
+            @ApiResponse(responseCode = "401", description = "로그인 후 사용 가능합니다."),
+            @ApiResponse(responseCode = "403", description = "삭제 권한이 없습니다.")
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteToDo(@PathVariable Long id, HttpSession session) {
+    public ResponseEntity<?> deleteToDo(
+            @Parameter(description = "삭제할 ToDo의 ID") @PathVariable Long id,
+            HttpSession session) {
         User loggedUser = (User) session.getAttribute("user");
 
         if (loggedUser == null) {
