@@ -1,5 +1,12 @@
 <h2>$\huge{\rm{\color{	
 #4682B4}ToDoList And Calendar App}}$</h2>
+
+<p>$\huge{\rm{\color{#4682B4}목차}}$</p>
+
+- [프로젝트 소개](#프로젝트-소개)
+- [APP 설명](#APP-설명)
+- [소스 빌드 및 실행 방법 메뉴얼](#소스-빌드)
+
 <br/>
 <br/>
 <h3 id="프로젝트-소개">$\huge{\rm{\color{	
@@ -21,13 +28,36 @@
 <br/>
 <br/>
 
-<p id="APP 설명">$\huge{\rm{\color{#4682B4}APP 설명}}$</p>
+<p id="APP-설명">$\huge{\rm{\color{#4682B4}APP 설명}}$</p>
 
 - **ToDoList**: ToDoList는 간단하게 제목, 작업 요약, 그리고 그 일을 해야할 시간을 넣었습니다. 그리고 컨트롤러에는 ToDo 생성, List불러오기, 삭제 API를 만들었습니다.
 - **Calendar**: Calandar 앱은 일정추가 에 일정 제목, 시작하는 날짜 부터 끝나는 날짜까지 기간을 정할 수 있고, 알림을 띄울 수 있는 시간을 정할 수 있게 해두었습니다
   또한 일정 수정 기능, 일정 목록을 한번에 볼수 있는 기능을 넣어 두었습니다. 
 - **Share Controller**: 각 ToDoList와 Calendar 앱은 사용자들의 username을 검색하여 해당 사용자에게 본인이 공유하고 싶은 일정을 공유할 수 있습니다. 해당 기능은 DB의 Join 기능을 수행하여 처리 하였습니다.
+<br/>
+<br/>
+<br/>
+<br/>
+<p id="소스-빌드">$\huge{\rm{\color{#4682B4}소스 빌드 및 실행 방법 메뉴얼}}$</p>
 
+인텔리제이 IDEA 에서 소스 빌드 해주시길 바랍니다.
+
+```bash
+git clone https://github.com/Scarpula/Project_Clush.git
+# IntelliJ 내부 터미널에서 git Clone 받으시고
+# application 실행이나, SpringBoot 서버 실행으로 실행하시면 됩니다.
+```
+
+이후 cd src/main/Front-End 에 들어가서 npm install 해주시고 
+Spring 서버 키신 후에 npm start 하셔서 port번호 3000번에서 
+로그인 하시고 진행 하시면 됩니다.
+
+회원 가입은 진행하지 않기 때문에 테스트용 아이디 
+# test1 , 12345
+# test2 , 12345 
+의 아이디를 이용하여 테스트 해주시면 감사하겠습니다.
+
+<br>
   
 
 
