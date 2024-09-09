@@ -12,7 +12,7 @@
 <br/>
 <br/>
 <h3 id="프로젝트-소개">$\huge{\rm{\color{	
-#4682B4}프로젝트 소개}}$</h3>
+#4682B4}프로젝트_소개}}$</h3>
 <br/>
 - 내가 할일 을 저장하는 ToDoList 와 일정 관리 캘린더로 이용하는 Calendar-App 을 만들었습니다.
 <br/>
@@ -30,7 +30,7 @@
 <br/>
 <br/>
 
-<p id="APP-설명">$\huge{\rm{\color{#4682B4}APP 설명}}$</p>
+<p id="APP-설명">$\huge{\rm{\color{#4682B4}APP_설명}}$</p>
 
 - **ToDoList**: ToDoList는 간단하게 제목, 작업 요약, 그리고 그 일을 해야할 시간을 넣었습니다. 그리고 컨트롤러에는 ToDo 생성, List불러오기, 삭제 API를 만들었습니다.
 - **Calendar**: Calandar 앱은 일정추가 에 일정 제목, 시작하는 날짜 부터 끝나는 날짜까지 기간을 정할 수 있고, 알림을 띄울 수 있는 시간을 정할 수 있게 해두었습니다
@@ -40,7 +40,7 @@
 <br/>
 <br/>
 <br/>
-<p id="소스-빌드">$\huge{\rm{\color{#4682B4}소스\quad 빌드\quad 및\quad 실행\quad 방법\quad 메뉴얼}}$</p>
+<p id="소스-빌드">$\huge{\rm{\color{#4682B4}소스_빌드_및_실행_방법_메뉴얼}}$</p>
 
 인텔리제이 IDEA 에서 소스 빌드 해주시길 바랍니다.
 
@@ -95,7 +95,7 @@ Spring 서버 키신 후에 npm start 하셔서 port번호 3000번에서
 <br/>
 <br/>
 
-<p id="설명">$\huge{\rm{\color{#4682B4}주력으로 사용한 컨트롤러에 대한 설명}}$</p>
+<p id="설명">$\huge{\rm{\color{#4682B4}주력으로_사용한_컨트롤러에_대한_설명}}$</p>
 <br/>
 <br/>
 
@@ -219,7 +219,7 @@ Spring 서버 키신 후에 npm start 하셔서 port번호 3000번에서
 <br/>
 <br/>
 <br/>
-<p id="API">$\huge{\rm{\color{#4682B4}API 명세서}}$</p>
+<p id="API">$\huge{\rm{\color{#4682B4}API_명세서}}$</p>
 <br/>
 <br/>
 <br/>
