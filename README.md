@@ -18,6 +18,8 @@
 <br/>
 <br/>
 
+<br/>
+<br/>
 
 <p id="APP 설명">$\huge{\rm{\color{#4682B4}APP 설명}}$</p>
 
