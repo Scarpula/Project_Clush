@@ -1,4 +1,4 @@
-// ToDoController.java
+// src/main/java/com/lsd/controller/ToDoController.java
 package com.lsd.controller;
 
 import com.lsd.dto.TodoDTO;
@@ -70,5 +70,28 @@ public class ToDoController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(todos);
+    }
+
+    // ToDo 삭제 메소드 추가
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteToDo(@PathVariable Long id, HttpSession session) {
+        User loggedUser = (User) session.getAttribute("user");
+
+        if (loggedUser == null) {
+            return ResponseEntity.status(401).body("로그인 후 사용 가능합니다.");
+        }
+
+        // 삭제할 ToDo를 조회
+        ToDo toDo = toDoRepository.findById(id).orElse(null);
+
+        // ToDo가 없거나 삭제할 권한이 없는 경우 처리
+        if (toDo == null || !toDo.getUser().getId().equals(loggedUser.getId())) {
+            return ResponseEntity.status(403).body("삭제 권한이 없습니다.");
+        }
+
+        // ToDo 삭제
+        toDoRepository.delete(toDo);
+
+        return ResponseEntity.ok("작업이 성공적으로 삭제되었습니다.");
     }
 }
