@@ -93,133 +93,112 @@ Spring 서버 키신 후에 npm start 하셔서 port번호 3000번에서
 
 <p id="설명">$\huge{\rm{\color{#4682B4}주력으로\quad 사용한\quad 컨트롤러에\quad 대한\quad 설명}}$</p>
 
+## 주력으로 사용한 컨트롤러에 대한 설명
+
 # ShareController 설명
 
-```java
-// 특정 사용자 검색
+1. **사용자 검색 기능 (`searchUser`)**  
+   특정 사용자를 검색하여, 공유할 대상 사용자가 존재하는지 확인합니다. 사용자가 없을 경우 `404` 에러를 반환하여 사용자에게 명확한 피드백을 제공합니다.
+
+    ```java
     @GetMapping("/search")
     public ResponseEntity<?> searchUser(@RequestParam String username) {
         Optional<User> user = userService.findByUsername(username);
-
         if (user.isEmpty()) {
             return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.");
         }
-
         return ResponseEntity.ok(user.get());
     }
-```
-<br/>
-- **사용자 검색 기능 (searchUser)**: 특정 사용자를 검색하여, 공유할 대상 사용자가 존재하는지 확인합니다. 사용자가 없을 경우 404 에러를 반환하여 유저 친화적인 경험을 제공합니다.
-<br/>
-```java
-// 일정 공유하기
+    ```
+
+2. **일정 공유 기능 (`shareCalendar`)**  
+   사용자가 소유한 일정을 다른 사용자에게 공유할 수 있는 기능입니다. 로그인 상태를 확인하고, 공유 대상 사용자가 존재하는지 확인한 뒤, 일정을 소유한 사용자인지 검증하여 권한이 없는 경우 `403` 에러를 반환함으로써 보안성을 강화합니다.
+
+    ```java
     @PostMapping("/calendar/{calendarId}/share")
     public ResponseEntity<?> shareCalendar(@PathVariable Long calendarId, @RequestParam String username, HttpSession session) {
         User loggedUser = (User) session.getAttribute("user");
-
         if (loggedUser == null) {
             return ResponseEntity.status(401).body("로그인 후 사용 가능합니다.");
         }
-
         Optional<User> targetUser = userService.findByUsername(username);
-
         if (targetUser.isEmpty()) {
             return ResponseEntity.status(404).body("공유할 사용자를 찾을 수 없습니다.");
         }
-
         Calendar calendar = userService.getCalendarById(calendarId);
-
         if (calendar == null || !calendar.getUser().getId().equals(loggedUser.getId())) {
             return ResponseEntity.status(403).body("일정을 공유할 권한이 없습니다.");
         }
-
         shareService.shareCalendarWithUser(calendar, targetUser.get());
         return ResponseEntity.ok("일정이 성공적으로 공유되었습니다.");
     }
-```
-<br/>
-- **일정 공유 기능 (shareCalendar)**: 사용자가 소유한 일정을 다른 사용자에게 공유할 수 있습니다. 로그인 상태를 확인한 후, 공유 대상 사용자가 존재하는지 확인하고, 일정을 소유한 사용자인지 검증합니다. 권한이 없는 경우 403 에러를 반환하여 보안성을 강화합니다.
-<br/>
-```java
-// 할 일 공유하기
+    ```
+
+3. **할 일 공유 기능 (`shareTodo`)**  
+   일정 공유와 유사하게, 사용자가 소유한 할 일을 다른 사용자에게 공유할 수 있는 기능입니다. 사용자의 로그인 상태와 할 일 소유 여부를 체크하여, 허용되지 않은 공유를 방지합니다.
+
+    ```java
     @PostMapping("/todo/{todoId}/share")
     public ResponseEntity<?> shareTodo(@PathVariable Long todoId, @RequestParam String username, HttpSession session) {
         User loggedUser = (User) session.getAttribute("user");
-
         if (loggedUser == null) {
             return ResponseEntity.status(401).body("로그인 후 사용 가능합니다.");
         }
-
         Optional<User> targetUser = userService.findByUsername(username);
-
         if (targetUser.isEmpty()) {
             return ResponseEntity.status(404).body("공유할 사용자를 찾을 수 없습니다.");
         }
-
         ToDo todo = userService.getToDoById(todoId);
-
         if (todo == null || !todo.getUser().getId().equals(loggedUser.getId())) {
             return ResponseEntity.status(403).body("할 일을 공유할 권한이 없습니다.");
         }
-
         shareService.shareToDoWithUser(todo, targetUser.get());
         return ResponseEntity.ok("할 일이 성공적으로 공유되었습니다.");
     }
-```
-<br/>
-- **할 일 공유 기능 (shareTodo)**:일정 공유와 유사하게, 사용자가 소유한 할 일을 다른 사용자에게 공유할 수 있는 기능을 제공합니다. 사용자 권한을 체크하여, 허용되지 않은 공유를 방지합니다.
-<br/>
-```java
-// 로그인한 사용자의 모든 일정과 공유된 일정 조회
+    ```
+
+4. **일정 조회 기능 (`getAllCalendars`)**  
+   로그인한 사용자가 소유한 일정과 다른 사용자로부터 공유받은 일정을 모두 조회할 수 있는 기능입니다. 이를 통해 사용자는 자신이 공유받은 일정을 손쉽게 확인할 수 있습니다.
+
+    ```java
     @GetMapping("/calendars")
     public ResponseEntity<?> getAllCalendars(HttpSession session) {
         User loggedUser = (User) session.getAttribute("user");
-
         if (loggedUser == null) {
             return ResponseEntity.status(401).body("로그인 후 사용 가능합니다.");
         }
-
-        // CalendarDTO 리스트 가져오기
         List<CalendarDTO> calendarDTOs = shareService.getAllCalendarsForUser(loggedUser);
-
-        // 로그 출력 확인
-        calendarDTOs.forEach(dto -> System.out.println("DTO isShared: " + dto.isShared()));
-
         return ResponseEntity.ok(calendarDTOs);
     }
-```
-<br/>
-- **일정 조회 기능 (getAllCalendars)**:로그인한 사용자가 소유한 일정과 다른 사용자로부터 공유받은 일정을 모두 조회할 수 있습니다. 이를 통해 사용자는 자신이 공유받은 일정을 쉽게 확인할 수 있습니다.
-<br/>
-```java
-// 로그인한 사용자의 모든 할 일과 공유된 할 일 조회
+    ```
+
+5. **할 일 조회 기능 (`getAllTodos`)**  
+   로그인한 사용자가 소유한 할 일과 다른 사용자로부터 공유받은 할 일을 조회할 수 있습니다. 이 기능은 일정 조회와 유사하게 동작하며, 공유받은 할 일을 필터링하여 반환하여 사용자가 필요한 정보만 얻을 수 있도록 합니다.
+
+    ```java
     @GetMapping("/todos")
     public ResponseEntity<?> getAllTodos(HttpSession session) {
         User loggedUser = (User) session.getAttribute("user");
-
         if (loggedUser == null) {
             return ResponseEntity.status(401).body("로그인 후 사용 가능합니다.");
         }
-
-        // 공유받은 작업만 가져오기
-        List<ToDo> todos = shareService.getAllToDosForUser(loggedUser); // ToDo 리스트 가져오기
+        List<ToDo> todos = shareService.getAllToDosForUser(loggedUser);
         List<TodoDTO> sharedTodoDTOs = todos.stream()
-                .filter(todo -> !todo.getUser().getUsername().equals(loggedUser.getUsername())) // 공유받은 작업 필터링
+                .filter(todo -> !todo.getUser().getUsername().equals(loggedUser.getUsername()))
                 .map(todo -> new TodoDTO(
                         todo.getId(),
                         todo.getTitle(),
                         todo.getSummary(),
                         todo.getTime(),
-                        todo.getUser().getUsername() // 공유한 사용자의 username 설정
+                        todo.getUser().getUsername()
                 ))
                 .collect(Collectors.toList());
-
-        return ResponseEntity.ok(sharedTodoDTOs); // 공유받은 TodoDTO 리스트만 반환
+        return ResponseEntity.ok(sharedTodoDTOs);
     }
-```
-<br/>
-- **할 일 조회 기능(getAllTodos)**:로그인한 사용자가 소유한 할 일과 다른 사용자로부터 공유받은 할 일을 조회할 수 있습니다. 이 기능은 일정 조회와 유사하게 동작하며, 공유받은 할 일을 필터링하여 반환합니다.
-<br/>
+    ```
+
+### 요약
+`ShareController`는 사용자 간의 협업을 위한 주요 기능을 제공하며, 보안과 사용 편리성을 고려한 설계로 사용자에게 명확한 피드백과 안전한 데이터 공유를 지원합니다.
 
 
 
