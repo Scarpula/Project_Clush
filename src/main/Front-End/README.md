@@ -215,25 +215,6 @@ Spring 서버 키신 후에 npm start 하셔서 port번호 3000번에서
 <br/>
 <br/>
 <br/>
-<p id="API">$\huge{\rm{\color{#4682B4}API-명세서}}$</p>
-<br/>
-
-# API Documentation
-
-이 프로젝트는 Swagger를 사용하여 API 명세를 제공합니다. Swagger UI를 통해 API를 테스트하고, 각 엔드포인트에 대한 자세한 정보를 확인할 수 있습니다.
-
-## Swagger UI 접속 방법
-
-1. 프로젝트를 실행합니다.
-2. 웹 브라우저를 열고 아래 주소로 접속합니다:
-http://localhost:8083/swagger-ui.html
-3. Swagger UI에서 API 명세를 확인하고, 각 API를 테스트할 수 있습니다.
-
-## 주요 기능
-
-- **API 명세 확인**: Swagger UI를 통해 모든 API 엔드포인트의 명세를 확인할 수 있습니다.
-- **API 테스트**: 각 API 엔드포인트를 직접 테스트하여 요청과 응답을 확인할 수 있습니다.
-- **명확한 문서 제공**: 각 엔드포인트에 대한 설명, 요청 파라미터, 응답 코드 등을 시각적으로 제공합니다.
 
 
 
