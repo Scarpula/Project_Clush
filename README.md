@@ -221,8 +221,6 @@ Spring 서버 키신 후에 npm start 하셔서 port번호 3000번에서
 <br/>
 <p id="API">$\huge{\rm{\color{#4682B4}API-명세서}}$</p>
 <br/>
-<br/>
-<br/>
 
 # API Documentation
 
