@@ -90,12 +90,7 @@ Spring 서버 키신 후에 npm start 하셔서 port번호 3000번에서
 <br/>
 <br/>
 <br/>
-# ERD Diagram
 
-![ERD Diagram](./ERD_Diagram.png)
-
-<br/>
-<br/>
 
 <p id="설명">$\huge{\rm{\color{#4682B4}주력으로-사용한-컨트롤러에-대한-설명}}$</p>
 <br/>
