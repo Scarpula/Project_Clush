@@ -66,9 +66,10 @@ Spring 서버 키신 후에 npm start 하셔서 port번호 3000번에서
 
 # ToDoList
 1. 일정을 추가해보세요
-2. 일정을 클릭해서 상세보기를 확인 해보세요
-3. 삭제기능을 사용해보세요
-4. 일정 공유하기 기능을 사용해보세요
+2. 다크모드 를 사용해보세요
+3. 일정을 클릭해서 상세보기를 확인 해보세요
+4. 삭제기능을 사용해보세요
+5. 일정 공유하기 기능을 사용해보세요
    1. 사용자를 검색합니다. ex) test1 아이디로 로그인 했을 경우
    2. test2를 검색합니다.
    3. 하단에 공유를 원하는 작업을 선택합니다.
@@ -92,125 +93,86 @@ Spring 서버 키신 후에 npm start 하셔서 port번호 3000번에서
 <br/>
 
 
-<p id="설명">$\huge{\rm{\color{#4682B4}주력으로-사용한-컨트롤러에-대한-설명}}$</p>
+<p id="설명">$\huge{\rm{\color{#4682B4}주력으로-사용한-컴포넌트에-대한-설명}}$</p>
 <br/>
 
-## 1. ShareController 설명
+## 1. CalendarContainer 컴포넌트 설명
 
-1. **사용자 검색 기능 (`searchUser`)**  
-   특정 사용자를 검색하여, 공유할 대상 사용자가 존재하는지 확인합니다. 사용자가 없을 경우 `404` 에러를 반환하여 사용자에게 명확한 피드백을 제공합니다.
+`CalendarContainer`는 일정 관리 및 공유를 위한 주요 컴포넌트로, FullCalendar를 사용하여 이벤트를 시각적으로 표시하고, 사용자 간의 일정 공유 기능을 제공합니다. 이 컴포넌트는 다양한 기능과 애니메이션 효과를 통해 사용자 경험을 강화하며, 일정 관리와 관련된 모든 주요 작업을 처리할 수 있도록 설계되었습니다.
 
-    ```java
-    @GetMapping("/search")
-    public ResponseEntity<?> searchUser(@RequestParam String username) {
-        Optional<User> user = userService.findByUsername(username);
-        if (user.isEmpty()) {
-            return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.");
-        }
-        return ResponseEntity.ok(user.get());
-    }
+### 주요 기능
+
+1. **캘린더 보기 (`FullCalendar`)**
+   - `FullCalendar` 라이브러리를 사용하여 월간, 주간, 일간의 일정 뷰를 제공합니다. 사용자는 일정을 시각적으로 확인하고 관리할 수 있습니다.
+   - 각 일정은 소유자와 공유 여부에 따라 색상이 다르게 표시되어, 시각적 구분이 용이합니다.
+
+    ```javascript
+    <FullCalendar
+      plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+      initialView="dayGridMonth"
+      events={events.map((event) => ({
+        ...event,
+        backgroundColor: event.shared ? getSharedEventColor() : getColorByUsername(event.username),
+        borderColor: event.shared ? getSharedEventColor() : getColorByUsername(event.username),
+        extendedProps: {
+          id: event.id,
+          notificationTime: event.notificationTime,
+          username: event.username,
+          shared: event.shared,
+        },
+      }))}
+      selectable={true}
+      select={handleSelect}
+      eventClick={handleEventClick}
+      editable={true}
+      dayCellClassNames={handleDayCellClassNames}
+    />
     ```
 
-2. **일정 공유 기능 (`shareCalendar`)**  
-   사용자가 소유한 일정을 다른 사용자에게 공유할 수 있는 기능입니다. 로그인 상태를 확인하고, 공유 대상 사용자가 존재하는지 확인한 뒤, 일정을 소유한 사용자인지 검증하여 권한이 없는 경우 `403` 에러를 반환함으로써 보안성을 강화합니다.
+2. **일정 추가 및 수정 (`EventModal` & `EditModal`)**
+   - 새로운 일정을 추가하거나, 기존 일정을 수정할 수 있습니다. `EventModal`과 `EditModal`을 통해 사용자는 간편하게 일정을 추가하고 변경할 수 있습니다.
+   - 모달 창을 활용하여 일정 입력 폼을 제공하고, 서버와의 비동기 요청을 통해 일정을 관리합니다.
 
-    ```java
-    @PostMapping("/calendar/{calendarId}/share")
-    public ResponseEntity<?> shareCalendar(@PathVariable Long calendarId, @RequestParam String username, HttpSession session) {
-        User loggedUser = (User) session.getAttribute("user");
-        if (loggedUser == null) {
-            return ResponseEntity.status(401).body("로그인 후 사용 가능합니다.");
-        }
-        Optional<User> targetUser = userService.findByUsername(username);
-        if (targetUser.isEmpty()) {
-            return ResponseEntity.status(404).body("공유할 사용자를 찾을 수 없습니다.");
-        }
-        Calendar calendar = userService.getCalendarById(calendarId);
-        if (calendar == null || !calendar.getUser().getId().equals(loggedUser.getId())) {
-            return ResponseEntity.status(403).body("일정을 공유할 권한이 없습니다.");
-        }
-        shareService.shareCalendarWithUser(calendar, targetUser.get());
-        return ResponseEntity.ok("일정이 성공적으로 공유되었습니다.");
-    }
+3. **일정 목록 조회 (`EventList`)**
+   - `EventList` 컴포넌트를 통해 현재 등록된 일정을 목록 형태로 조회할 수 있으며, 목록에서 직접 일정을 삭제할 수 있습니다.
+
+4. **일정 공유 기능**
+   - 사용자가 다른 사용자와 일정을 공유할 수 있는 기능을 제공합니다. 일정 공유 시, 검색된 사용자와 선택된 일정이 매핑되어 서버에 요청이 전송됩니다.
+   - 사용자는 검색 필드를 통해 특정 사용자를 검색하고, 공유할 일정을 선택한 후 "일정 공유하기" 버튼을 클릭하여 공유를 완료할 수 있습니다.
+
+    ```javascript
+    const handleShareEvent = async () => {
+      if (!selectedEventId || !foundUser) {
+        alert('일정과 공유할 사용자를 선택하세요.');
+        return;
+      }
+
+      try {
+        await axios.post(`http://localhost:8083/api/share/calendar/${selectedEventId}/share?username=${foundUser.username}`);
+        alert('일정이 성공적으로 공유되었습니다.');
+      } catch (error) {
+        console.error('일정 공유 오류:', error);
+        alert('일정 공유에 실패했습니다.');
+      }
+    };
     ```
 
-3. **할 일 공유 기능 (`shareTodo`)**  
-   일정 공유와 유사하게, 사용자가 소유한 할 일을 다른 사용자에게 공유할 수 있는 기능입니다. 사용자의 로그인 상태와 할 일 소유 여부를 체크하여, 허용되지 않은 공유를 방지합니다.
+5. **탭 UI를 통한 편리한 사용자 인터페이스**
+   - Mantine의 `Tabs` 컴포넌트를 활용하여 캘린더, 일정 목록, 일정 공유 등 주요 기능을 탭으로 구분하여 제공합니다.
+   - 각 탭에 해당하는 내용이 애니메이션과 함께 전환되어 사용자 경험을 높입니다.
 
-    ```java
-    @PostMapping("/todo/{todoId}/share")
-    public ResponseEntity<?> shareTodo(@PathVariable Long todoId, @RequestParam String username, HttpSession session) {
-        User loggedUser = (User) session.getAttribute("user");
-        if (loggedUser == null) {
-            return ResponseEntity.status(401).body("로그인 후 사용 가능합니다.");
-        }
-        Optional<User> targetUser = userService.findByUsername(username);
-        if (targetUser.isEmpty()) {
-            return ResponseEntity.status(404).body("공유할 사용자를 찾을 수 없습니다.");
-        }
-        ToDo todo = userService.getToDoById(todoId);
-        if (todo == null || !todo.getUser().getId().equals(loggedUser.getId())) {
-            return ResponseEntity.status(403).body("할 일을 공유할 권한이 없습니다.");
-        }
-        shareService.shareToDoWithUser(todo, targetUser.get());
-        return ResponseEntity.ok("할 일이 성공적으로 공유되었습니다.");
-    }
-    ```
+6. **스타일링 및 애니메이션 (`Framer Motion` & `styled-components`)**
+   - `styled-components`와 `Framer Motion`을 사용하여 각종 스타일링과 애니메이션 효과를 적용합니다. 일정 선택 시 부드러운 전환과 클릭 시 확대 효과 등을 제공하여 인터페이스의 생동감을 더했습니다.
 
-4. **일정 조회 기능 (`getAllCalendars`)**  
-   로그인한 사용자가 소유한 일정과 다른 사용자로부터 공유받은 일정을 모두 조회할 수 있는 기능입니다. 이를 통해 사용자는 자신이 공유받은 일정을 손쉽게 확인할 수 있습니다.
+### 사용 이유 및 목적
 
-    ```java
-    @GetMapping("/calendars")
-    public ResponseEntity<?> getAllCalendars(HttpSession session) {
-        User loggedUser = (User) session.getAttribute("user");
-        if (loggedUser == null) {
-            return ResponseEntity.status(401).body("로그인 후 사용 가능합니다.");
-        }
-        List<CalendarDTO> calendarDTOs = shareService.getAllCalendarsForUser(loggedUser);
-        return ResponseEntity.ok(calendarDTOs);
-    }
-    ```
+- **효율적인 일정 관리**: `CalendarContainer`는 직관적인 UI와 다양한 기능을 통해 사용자가 일정을 쉽게 추가, 수정, 삭제할 수 있도록 지원합니다. 캘린더 형식의 뷰는 사용자가 일정을 한눈에 파악하고 관리할 수 있는 환경을 제공합니다.
+- **협업과 일정 공유**: 사용자 간의 협업을 촉진하기 위해 일정 공유 기능을 포함하고 있습니다. 이를 통해 팀원 간의 일정 공유가 용이하며, 프로젝트 관리의 효율성을 높입니다.
+- **사용자 경험 향상**: `Framer Motion`을 활용한 애니메이션 효과와 다양한 컴포넌트 라이브러리의 조합을 통해 사용자 인터페이스를 더 직관적이고 매력적으로 만듭니다.
+- **유연한 데이터 처리**: 각 일정은 서버와의 비동기 통신을 통해 실시간으로 관리되며, 사용자 간의 데이터 공유와 업데이트가 원활하게 이루어집니다. 
 
-5. **할 일 조회 기능 (`getAllTodos`)**  
-   로그인한 사용자가 소유한 할 일과 다른 사용자로부터 공유받은 할 일을 조회할 수 있습니다. 이 기능은 일정 조회와 유사하게 동작하며, 공유받은 할 일을 필터링하여 반환하여 사용자가 필요한 정보만 얻을 수 있도록 합니다.
+이 컴포넌트는 전체 애플리케이션에서 핵심적인 일정 관리 기능을 수행하며, 사용자 친화적인 인터페이스를 제공하여 서비스의 가치를 높이는 데 기여합니다.
 
-    ```java
-    @GetMapping("/todos")
-    public ResponseEntity<?> getAllTodos(HttpSession session) {
-        User loggedUser = (User) session.getAttribute("user");
-        if (loggedUser == null) {
-            return ResponseEntity.status(401).body("로그인 후 사용 가능합니다.");
-        }
-        List<ToDo> todos = shareService.getAllToDosForUser(loggedUser);
-        List<TodoDTO> sharedTodoDTOs = todos.stream()
-                .filter(todo -> !todo.getUser().getUsername().equals(loggedUser.getUsername()))
-                .map(todo -> new TodoDTO(
-                        todo.getId(),
-                        todo.getTitle(),
-                        todo.getSummary(),
-                        todo.getTime(),
-                        todo.getUser().getUsername()
-                ))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(sharedTodoDTOs);
-    }
-    ```
-
-### 요약
-`ShareController`는 사용자 간의 협업을 위한 주요 기능을 제공하며, 보안과 사용 편리성을 고려한 설계로 사용자에게 명확한 피드백과 안전한 데이터 공유를 지원합니다.
-
-## 2. 사용 이유 및 목적
-
-- **협업 기능 제공**: `ShareController`는 일정과 할 일을 사용자 간에 공유할 수 있는 기능을 제공하여 협업과 커뮤니케이션을 원활하게 만듭니다. 이 기능은 팀 작업, 프로젝트 관리, 가족 간의 일정 공유 등 다양한 상황에서 매우 유용하게 사용될 수 있습니다.
-
-- **보안성과 권한 검증**: 각 기능은 사용자의 로그인 상태와 일정/할 일의 소유 여부를 철저하게 검증하여, 민감한 데이터가 허가되지 않은 사용자에게 노출되지 않도록 합니다. 이를 통해 애플리케이션의 보안성을 높이고, 사용자 신뢰를 유지할 수 있습니다.
-
-- **유연한 데이터 처리**: 일정과 할 일 데이터를 DTO로 변환하여 필요한 정보만 제공하고, 불필요한 정보의 노출을 방지합니다. 이는 클라이언트와의 데이터 통신을 효율적으로 만들며, 유지보수의 용이성을 높입니다.
-
-- **사용자 경험 강화**: 에러 발생 시 적절한 HTTP 상태 코드와 메시지를 제공하여, 사용자에게 명확한 피드백을 줌으로써 애플리케이션의 사용성을 높입니다. 사용자 친화적인 오류 처리로 인해 서비스의 신뢰성이 증가합니다.
-
-이러한 이유로 `ShareController`는 일정과 할 일 공유 API의 핵심적인 역할을 수행하며, 전체 애플리케이션에서 중요한 기능을 제공합니다. 사용자 간의 협업을 촉진하고, 안전한 데이터 처리를 보장하여 서비스의 가치를 높이는 데 기여합니다.
 
 <br/>
 <br/>
