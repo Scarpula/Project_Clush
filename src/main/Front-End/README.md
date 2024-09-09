@@ -25,11 +25,11 @@
 
 ## $\huge{\rm{\color{#FF33FF}소스\ 빌드\ 및\ 실행\ 방법\ 메뉴얼}}$
 
-..
+```bash
 git clone https://github.com/Scarpula/Project_Clush.git
 # IntelliJ 내부 터미널에서 git Clone 받으시고
 # application 실행이나, SpringBoot 서버 실행으로 실행하시면 됩니다.
-..
+```
 
 1. **IDE**: IntelliJ IDEA에서 소스를 빌드해 주세요.
 2. **프로젝트 디렉토리 이동**: `cd src/main/Front-End`
