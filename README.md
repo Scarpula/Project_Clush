@@ -2,18 +2,22 @@
 #4682B4}ToDoList And Calendar App}}$</h2>
 <br/>
 <br/>
-<br/>
 <h3 id="프로젝트-소개">$\huge{\rm{\color{	
 #4682B4}프로젝트 소개}}$</h3>
 <br/>
 - 내가 할일 을 저장하는 ToDoList 와 일정 관리 캘린더로 이용하는 Calendar-App 을 만들었습니다.
 <br/>
+<br/>
 - ToDoList 와 Calendar 앱은 하나의 리액트 앱에서 진행하되 각 컴포넌트를 나눠서 버튼식으로 나눠서 진행하였습니다.
+<br/>
 <br/>
 - 자세한 설명은 Front-End 폴더 안에 README에서 설명드리고 여기선 Back-End 에 대한 설명을 드리겠습니다.
 <br/>
+<br/>
 - Back-End는 SpringBoot v3 을 이용하였습니다. 프레임워크 툴은 IntelliJ IDEA를 사용하였습니다.
 <br/>
+<br/>
+
 
 <p id="APP 설명">$\huge{\rm{\color{#4682B4}APP 설명}}$</p>
 
