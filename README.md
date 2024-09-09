@@ -38,7 +38,7 @@
 <br/>
 <br/>
 <br/>
-<p id="소스-빌드">$\huge{\rm{\color{#4682B4}소스 빌드 및 실행 방법 메뉴얼}}$</p>
+<p id="소스-빌드">$\huge{\rm{\color{#4682B4}소스\quad 빌드\quad 및\quad 실행\quad 방법\quad 메뉴얼}}$</p>
 
 인텔리제이 IDEA 에서 소스 빌드 해주시길 바랍니다.
 
